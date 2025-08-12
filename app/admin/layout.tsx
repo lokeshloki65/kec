@@ -2,39 +2,35 @@
 
 import type React from "react"
 
-import { useAuth } from "@/hooks/use-auth"
-import { AuthProvider } from "@/hooks/use-auth"
-import { redirect } from "next/navigation"
 import { useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { useAuth } from "@/lib/auth"
+import { AdminSidebar } from "@/components/admin/admin-sidebar"
 
-function AdminLayoutContent({ children }: { children: React.ReactNode }) {
-  const { user, isLoading, isAuthenticated } = useAuth()
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const { user, isAuthenticated } = useAuth()
+  const router = useRouter()
 
   useEffect(() => {
-    if (!isLoading && (!isAuthenticated || user?.role !== "admin")) {
-      redirect("/")
+    if (!isAuthenticated || user?.role !== "admin") {
+      router.push("/login")
     }
-  }, [user, isLoading, isAuthenticated])
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      </div>
-    )
-  }
+  }, [isAuthenticated, user, router])
 
   if (!isAuthenticated || user?.role !== "admin") {
     return null
   }
 
-  return <>{children}</>
-}
-
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <AuthProvider>
-      <AdminLayoutContent>{children}</AdminLayoutContent>
-    </AuthProvider>
+    <div className="min-h-screen bg-gray-50">
+      <AdminSidebar />
+      <div className="lg:pl-64">
+        <main className="p-6">{children}</main>
+      </div>
+    </div>
   )
 }

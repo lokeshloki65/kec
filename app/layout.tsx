@@ -1,17 +1,13 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { DM_Sans } from "next/font/google"
+import { GeistSans } from "geist/font/sans"
+import { GeistMono } from "geist/font/mono"
+import { Toaster } from "@/components/ui/toaster"
 import "./globals.css"
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-dm-sans",
-})
-
 export const metadata: Metadata = {
-  title: "KEC EVENT HUB - College Event Management",
-  description: "Kongu Engineering College Event Management Platform",
+  title: "KEC Event Hub - Kongu Engineering College",
+  description: "Your gateway to college events at Kongu Engineering College",
   generator: "v0.dev",
 }
 
@@ -21,8 +17,20 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${dmSans.variable} antialiased`}>
-      <body className="font-sans bg-slate-50">{children}</body>
+    <html lang="en">
+      <head>
+        <style>{`
+html {
+  font-family: ${GeistSans.style.fontFamily};
+  --font-sans: ${GeistSans.variable};
+  --font-mono: ${GeistMono.variable};
+}
+        `}</style>
+      </head>
+      <body>
+        {children}
+        <Toaster />
+      </body>
     </html>
   )
 }
